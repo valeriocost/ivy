@@ -18,6 +18,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -118,19 +119,38 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../nested_array/nested_array.html">Nested array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../utils/backend.html">Backend</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/dynamic_import.html">Dynamic import</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/inspection.html">Inspection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utils/verbosity.html">Verbosity</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Testing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../testing/assertions.html">Assertions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/available_frameworks.html">Available frameworks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/function_testing.html">Function testing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/hypothesis_helpers.html">Hypothesis helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/structs.html">Structs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/test_parameter_flags.html">Test parameter flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing/testing_helpers.html">Testing helpers</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -190,7 +210,7 @@
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>gh repo clone YOUR_USERNAME/ivy your_folder -- --recurse-submodules
 </pre></div>
 </div>
-<p>The add Ivy original repository as upstream, to easily sync with latest changes.</p>
+<p>Then add Ivy original repository as upstream, to easily sync with latest changes.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>git remote add upstream https://github.com/unifyai/ivy.git
 </pre></div>
 </div>
@@ -371,8 +391,11 @@ Add the remote python interpreter by:</p>
 Click the “+” on top left and it should add a docker connection.</p></li>
 <li><p>Going to settings -&gt; project -&gt; Python Interpreter</p></li>
 <li><p>Clicking add interpreter (currently by clicking the ⚙ icon by the right side) which should open a new window.</p></li>
-<li><p>Choosing “Docker” from the left panel.
-Type python3 (with the number) in python interpreter path and press ok.</p></li>
+<li><p>Choosing “On Docker” from the dropdown menu.</p></li>
+<li><p>Choosing “Docker” from the “Docker server” dropdown menu, choosing “Pull” if you want to use a remote interpreter, and using <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy:latest</span></code> as the image tag.</p></li>
+<li><p>If you don’t want to use a remote interpreter, choose “Build” and use the suitable Dockerfile; then choosing <code class="code docutils literal notranslate"><span class="pre">docker/Dockerfile</span></code> to be the Dockerfile.</p></li>
+<li><p>Clicking next and navigating to system interpreter tab from the menu on the left.</p></li>
+<li><p>Choosing the built interpreter from the dropdown menu.</p></li>
 </ol>
 </li>
 </ol>
