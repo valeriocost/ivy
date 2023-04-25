@@ -416,767 +416,271 @@ Examples
 
 The `Examples page`_ features a wide range of demos and tutorials showcasing the functionalities of Ivy along with multiple use cases, but feel free to check out some shorter framework-specific examples here ⬇️
 
-.. raw:: html
-
-   <details>
-   <summary><b>I'm using PyTorch&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/torch_small_logo.png"></b></summary>
-      <blockquote>You can use Ivy to get PyTorch code from:
-         <details>
-            <summary>Any model</summary>
-            <blockquote>
-               <details>
-                  <summary>From TensorFlow</summary>
-
-.. code-block:: python
-
-    import ivy
-    import torch
-    import tensorflow as tf
-
-    # Get a pretrained keras model
-    eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
-        include_top=False, weights="imagenet", input_shape=(224, 224, 3)
-    )
-
-    # Transpile it into a torch.nn.Module with the corresponding parameters
-    noise = tf.random.normal(shape=(1, 224, 224, 3))
-    torch_eff_encoder = ivy.transpile(eff_encoder, to="torch", args=(noise,))
-
-    # Build a classifier using the transpiled encoder
-    class Classifier(torch.nn.Module):
-        def __init__(self, num_classes=20):
-            super(Classifier, self).__init__()
-            self.encoder = torch_eff_encoder
-            self.fc = torch.nn.Linear(1280, num_classes)
-
-        def forward(self, x):
-            x = self.encoder(x)
-            return self.fc(x)
-
-    # Initialize a trainable, customizable, torch.nn.Module
-    classifier = Classifier()
-    ret = classifier(torch.rand((1, 244, 244, 3)))
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From JAX</summary>
-
-.. code-block:: python
-
-    import ivy
-    import jax
-    import torch
+-- only:: html
 
-    # Get a pretrained haiku model
-    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
-    from deepmind_perceiver_io import key, perceiver_backbone
+    .. tab-set::
 
-    # Transpile it into a torch.nn.Module with the corresponding parameters
-    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
-    params = perceiver_backbone.init(rng=key, images=dummy_input)
-    backbone = ivy.transpile(
-        perceiver_backbone, to="torch", params_v=params, kwargs={"images": dummy_input}
-    )
-
-    # Build a classifier using the transpiled backbone
-    class PerceiverIOClassifier(torch.nn.Module):
-        def __init__(self, num_classes=20):
-            super(PerceiverIOClassifier, self).__init__()
-            self.backbone = backbone
-            self.max_pool = torch.nn.MaxPool2d((512, 1))
-            self.flatten = torch.nn.Flatten()
-            self.fc = torch.nn.Linear(1024, num_classes)
+        .. tab-item:: PyTorch
 
-        def forward(self, x):
-            x = self.backbone(images=x)
-            x = self.flatten(self.max_pool(x))
-            return self.fc(x)
+            .. tab-set::
 
-    # Initialize a trainable, customizable, torch.nn.Module
-    classifier = PerceiverIOClassifier()
-    ret = classifier(torch.rand((1, 3, 224, 224)))
+                .. tab-item:: Any model
 
-.. raw:: html
+                    .. tab-set::
 
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any library</summary>
-            <blockquote>
-               <details>
-                  <summary>From Tensorflow</summary>
+                        .. tab-item:: From TensorFlow
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
-    import torch
-    import os
-    os.environ["SM_FRAMEWORK"] = "tf.keras"
-    import segmentation_models as sm
+                                print("Hello World")
 
-    # transpile sm from tensorflow to torch
-    torch_sm = ivy.transpile(sm, source="tensorflow", to="torch")
+                        .. tab-item:: From JAX
 
-    # get some image-like arrays
-    output = torch.rand((1, 3, 512, 512))
-    target = torch.rand((1, 3, 512, 512))
+                            .. code-block:: python
 
-    # and use the transpiled version of any function from the library!
-    out = torch_sm.metrics.iou_score(output, target)
+                                print("Hello World")
 
-.. raw:: html
+                        .. tab-item:: From NumPy
 
-               </details>
-               <details>
-                  <summary>From JAX</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
-    import rax
-    import torch
+                .. tab-item:: Any library
 
-    # transpile rax from jax to torch
-    torch_rax = ivy.transpile(rax, source="jax", to="torch")
+                    .. tab-set::
 
-    # get some arrays
-    scores = torch.tensor([2.2, 1.3, 5.4])
-    labels = torch.tensor([1.0, 0.0, 0.0])
+                        .. tab-item:: From TensorFlow
 
-    # and use the transpiled version of any function from the library!
-    out = torch_rax.poly1_softmax_loss(scores, labels)
+                            .. code-block:: python
 
-.. raw:: html
+                                print("Hello World")
 
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
+                        .. tab-item:: From JAX
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
-    import torch
-    import madmom
+                                print("Hello World")
 
-    # transpile madmon from numpy to torch
-    torch_madmom = ivy.transpile(madmom, source="numpy", to="torch")
+                        .. tab-item:: From NumPy
 
-    # get some arrays
-    freqs = torch.arange(20) * 10
+                            .. code-block:: python
 
-    # and use the transpiled version of any function from the library!
-    out = torch_madmom.audio.filters.hz2midi(freqs)
+                                print("Hello World")
 
-.. raw:: html
+                .. tab-item:: Any function
 
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any function</summary>
-            <blockquote>
-               <details>
-                  <summary>From Tensorflow</summary>
+                    .. tab-set::
 
-.. code-block:: python
+                        .. tab-item:: From TensorFlow
 
-    import ivy
+                            .. code-block:: python
 
-    # ToDo: Write tf to torch function
+                                print("Hello World")
 
-.. raw:: html
+                        .. tab-item:: From JAX
 
-               </details>
-               <details>
-                  <summary>From JAX</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
+                        .. tab-item:: From NumPy
 
-    # ToDo: Write jax to torch function
+                            .. code-block:: python
 
-.. raw:: html
+                                print("Hello World")
 
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
+        .. tab-item:: TensorFlow
 
-.. code-block:: python
+            .. tab-set::
 
-    import ivy
+                .. tab-item:: Any model
 
-    # ToDo: Write numpy to torch function
+                    .. tab-set::
 
-.. raw:: html
+                        .. tab-item:: From PyTorch
 
-               </details>
-            </blockquote>
-        </details>
-        
-     </blockquote>
-   </details>
+                            .. code-block:: python
 
-   <details>
-   <summary><b>I'm using TensorFlow&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tf_small_logo.png"></b></summary>
-      <blockquote>You can use Ivy to get TensorFlow code from:
-         <details>
-            <summary>Any model</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
+                                print("Hello World")
 
-.. code-block:: python
+                        .. tab-item:: From JAX
 
-    import ivy
-    import torch
-    import timm
-    import tensorflow as tf
+                            .. code-block:: python
 
-    # Get a pretrained pytorch model
-    mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
+                                print("Hello World")
 
-    # Transpile it into a keras.Model with the corresponding parameters
-    noise = torch.randn(1, 3, 224, 224)
-    mlp_encoder = ivy.transpile(mlp_encoder, to="tensorflow", args=(noise,))
+                        .. tab-item:: From NumPy
 
-    # Build a classifier using the transpiled encoder
-    class Classifier(tf.keras.Model):
-        def __init__(self):
-            super(Classifier, self).__init__()
-            self.encoder = mlp_encoder
-            self.output_dense = tf.keras.layers.Dense(units=1000, activation="softmax")
+                            .. code-block:: python
 
-        def call(self, x):
-            x = self.encoder(x)
-            return self.output_dense(x)
+                                print("Hello World")
 
-    # Transform the classifier and use it as a standard keras.Model
-    x = tf.random.normal(shape=(1, 3, 224, 224))
-    model = Classifier()
-    ret = model(x)
+                .. tab-item:: Any library
 
-.. raw:: html
+                    .. tab-set::
 
-               </details>
-               <details>
-                  <summary>From JAX</summary>
+                        .. tab-item:: From PyTorch
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
-    import jax
-    import tensorflow as tf
+                                print("Hello World")
 
-    # Get a pretrained haiku model
-    # https://lets-unify.ai/demos/scripts/deepmind_perceiver_io.py
-    from deepmind_perceiver_io import key, perceiver_backbone
+                        .. tab-item:: From JAX
 
-    # Transpile it into a tf.keras.Model with the corresponding parameters
-    dummy_input = jax.random.uniform(key, shape=(1, 3, 224, 224))
-    params = perceiver_backbone.init(rng=key, images=dummy_input)
-    backbone = ivy.transpile(
-        perceiver_backbone, to="tensorflow", params_v=params, args=(dummy_input,)
-    )
+                            .. code-block:: python
 
-    # Build a classifier using the transpiled backbone
-    class PerceiverIOClassifier(tf.keras.Model):
-        def __init__(self, num_classes=20):
-            super(PerceiverIOClassifier, self).__init__()
-            self.backbone = backbone
-            self.max_pool = tf.keras.layers.MaxPooling1D(pool_size=512)
-            self.flatten = tf.keras.layers.Flatten()
-            self.fc = tf.keras.layers.Dense(num_classes)
+                                print("Hello World")
 
-        def call(self, x):
-            x = self.backbone(x)
-            x = self.flatten(self.max_pool(x))
-            return self.fc(x)
+                        .. tab-item:: From NumPy
 
-    # Initialize a trainable, customizable, tf.keras.Model
-    x = tf.random.normal(shape=(1, 3, 224, 224))
-    classifier = PerceiverIOClassifier()
-    ret = classifier(x)
+                            .. code-block:: python
 
-.. raw:: html
+                                print("Hello World")
 
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any library</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
+                .. tab-item:: Any function
 
-.. code-block:: python
+                    .. tab-set::
 
-    import ivy
-    import kornia
-    import requests
-    import numpy as np
-    import tensorflow as tf
-    from PIL import Image
+                        .. tab-item:: From PyTorch
 
-    # transpile kornia from torch to tensorflow
-    tf_kornia = ivy.transpile(kornia, source="torch", to="tensorflow")
+                            .. code-block:: python
 
-    # get an image
-    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
-    raw_img = Image.open(requests.get(url, stream=True).raw)
+                                print("Hello World")
 
-    # convert it to the format expected by kornia
-    img = np.array(raw_img)
-    img = tf.transpose(tf.constant(img), (2, 0, 1))
-    img = tf.expand_dims(img, 0) / 255
+                        .. tab-item:: From JAX
 
-    # and use the transpiled version of any function from the library!
-    out = tf_kornia.enhance.sharpness(img, 5)
+                            .. code-block:: python
 
-.. raw:: html
+                                print("Hello World")
 
-               </details>
-               <details>
-                  <summary>From JAX</summary>
+                        .. tab-item:: From NumPy
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
-    import rax
-    import tensorflow as tf
+                                print("Hello World")
 
-    # transpile rax from jax to tensorflow
-    tf_rax = ivy.transpile(rax, source="jax", to="tensorflow")
+        .. tab-item:: Jax
 
-    # get some arrays
-    scores = tf.constant([2.2, 1.3, 5.4])
-    labels = tf.constant([1.0, 0.0, 0.0])
+            .. tab-set::
 
-    # and use the transpiled version of any function from the library!
-    out = tf_rax.poly1_softmax_loss(scores, labels)
+                .. tab-item:: Any model
 
-.. raw:: html
+                    .. tab-set::
 
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
+                        .. tab-item:: From PyTorch
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
-    import madmom
-    import tensorflow as tf
+                                print("Hello World")
 
-    # transpile madmom from numpy to tensorflow
-    tf_madmom = ivy.transpile(madmom, source="numpy", to="tensorflow")
+                        .. tab-item:: From TensorFlow
 
-    # get some arrays
-    freqs = tf.range(20) * 10
+                            .. code-block:: python
 
-    # and use the transpiled version of any function from the library!
-    out = tf_madmom.audio.filters.hz2midi(freqs)
+                                print("Hello World")
 
-.. raw:: html
+                        .. tab-item:: From NumPy
 
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any function</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
+                .. tab-item:: Any library
 
-    # ToDo: Write torch to tf function
+                    .. tab-set::
 
-.. raw:: html
+                        .. tab-item:: From PyTorch
 
-               </details>
-               <details>
-                  <summary>From JAX</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
+                        .. tab-item:: From TensorFlow
 
-    # ToDo: Write jax to tf function
+                            .. code-block:: python
 
-.. raw:: html
+                                print("Hello World")
 
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
+                        .. tab-item:: From NumPy
 
-.. code-block:: python
+                            .. code-block:: python
 
-    import ivy
+                                print("Hello World")
 
-    # ToDo: Write numpy to tf function
+                .. tab-item:: Any function
 
-.. raw:: html
+                    .. tab-set::
 
-               </details>
-            </blockquote>
-        </details>
-        
-     </blockquote>
-   </details>
+                        .. tab-item:: From PyTorch
 
-   <details>
-   <summary><b>I'm using Jax&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_small_logo.png"></b></summary>
-      <blockquote>You can use Ivy to get JAX code from:
-         <details>
-            <summary>Any model</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
-    import timm
-    import torch
-    import jax
-    import haiku as hk
+                        .. tab-item:: From TensorFlow
 
-    # Get a pretrained pytorch model
-    mlp_encoder = timm.create_model("mixer_b16_224", pretrained=True, num_classes=0)
+                            .. code-block:: python
 
-    # Transpile it into a hk.Module with the corresponding parameters
-    noise = torch.randn(1, 3, 224, 224)
-    mlp_encoder = ivy.transpile(mlp_encoder, to="jax", args=(noise,))
+                                print("Hello World")
 
-    # Build a classifier using the transpiled encoder
-    class Classifier(hk.Module):
-        def __init__(self, num_classes=1000):
-            super(Classifier, self).__init__()
-            self.encoder = mlp_encoder()
-            self.fc = hk.Linear(output_size=num_classes, with_bias=True)
+                        .. tab-item:: From NumPy
 
-        def __call__(self, x):
-            x = self.encoder(x)
-            x = self.fc(x)
-            return x
+                            .. code-block:: python
 
-    def _forward_classifier(x):
-        module = Classifier()
-        return module(x)
+                                print("Hello World")
 
-    # Transform the classifier and use it as a standard hk.Module
-    rng_key = jax.random.PRNGKey(42)
-    x = jax.random.uniform(key=rng_key, shape=(1, 3, 224, 224), dtype=jax.numpy.float32)
-    forward_classifier = hk.transform(_forward_classifier)
-    params = forward_classifier.init(rng=rng_key, x=x)
+        .. tab-item:: NumPy
 
-    ret = forward_classifier.apply(params, None, x)
+            .. tab-set::
 
-.. raw:: html
+                .. tab-item:: Any library
 
-               </details>
-               <details>
-                  <summary>From TensorFlow</summary>
+                    .. tab-set::
 
-.. code-block:: python
+                        .. tab-item:: From PyTorch
 
-    import ivy
-    import jax
-    import haiku as hk
-    import tensorflow as tf
+                            .. code-block:: python
 
-    # Get a pretrained keras model
-    eff_encoder = tf.keras.applications.efficientnet_v2.EfficientNetV2B0(
-        include_top=False, weights="imagenet", input_shape=(224, 224, 3)
-    )
+                                print("Hello World")
 
-    # Transpile it into a hk.Module with the corresponding parameters
-    noise = tf.random.normal(shape=(1, 224, 224, 3))
-    hk_eff_encoder = ivy.transpile(eff_encoder, to="jax", args=(noise,))
+                        .. tab-item:: From TensorFlow
 
-    # Build a classifier using the transpiled encoder
-    class Classifier(hk.Module):
-        def __init__(self, num_classes=1000):
-            super(Classifier, self).__init__()
-            self.encoder = hk_eff_encoder()
-            self.fc = hk.Linear(output_size=num_classes, with_bias=True)
+                            .. code-block:: python
 
-        def __call__(self, x):
-            x = self.encoder(x)
-            x = self.fc(x)
-            return x
+                                print("Hello World")
 
-    def _forward_classifier(x):
-        module = Classifier()
-        return module(x)
+                        .. tab-item:: From JAX
 
-    # Transform the classifier and use it as a standard hk.Module
-    rng_key = jax.random.PRNGKey(42)
-    dummy_x = jax.random.uniform(key=rng_key, shape=(1, 224, 224, 3))
-    forward_classifier = hk.transform(_forward_classifier)
-    params = forward_classifier.init(rng=rng_key, x=dummy_x)
+                            .. code-block:: python
 
-    ret = forward_classifier.apply(params, None, dummy_x)
+                                print("Hello World")
 
-.. raw:: html
+                .. tab-item:: Any function
 
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any library</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
+                    .. tab-set::
 
-.. code-block:: python
+                        .. tab-item:: From PyTorch
 
-    import ivy
-    import kornia
-    import requests
-    import jax.numpy as jnp
-    from PIL import Image
+                            .. code-block:: python
 
-    # transpile kornia from torch to jax
-    jax_kornia = ivy.transpile(kornia, source="torch", to="jax")
+                                print("Hello World")
 
-    # get an image
-    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
-    raw_img = Image.open(requests.get(url, stream=True).raw)
+                        .. tab-item:: From TensorFlow
 
-    # convert it to the format expected by kornia
-    img = jnp.transpose(jnp.array(raw_img), (2, 0, 1))
-    img = jnp.expand_dims(img, 0) / 255
+                            .. code-block:: python
 
-    # and use the transpiled version of any function from the library!
-    out = jax_kornia.enhance.sharpness(img, 5)
+                                print("Hello World")
 
-.. raw:: html
+                        .. tab-item:: From JAX
 
-               </details>
-               <details>
-                  <summary>From TensorFlow</summary>
+                            .. code-block:: python
 
-.. code-block:: python
+                                print("Hello World")
 
-    import ivy
-    import jax
-    import os
-    os.environ["SM_FRAMEWORK"] = "tf.keras"
-    import segmentation_models as sm
+.. only:: rst
 
-    # transpile sm from tensorflow to jax
-    jax_sm = ivy.transpile(sm, source="tensorflow", to="jax")
-
-    # get some image-like arrays
-    key = jax.random.PRNGKey(23)
-    key1, key2 = jax.random.split(key)
-    output = jax.random.uniform(key1, (1, 3, 512, 512))
-    target = jax.random.uniform(key2, (1, 3, 512, 512))
-
-    # and use the transpiled version of any function from the library!
-    out = jax_sm.metrics.iou_score(output, target)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
-
-.. code-block:: python
-
-    import ivy
-    import madmom
-    import jax.numpy as jnp
-
-    # transpile madmon from numpy to jax
-    jax_madmom = ivy.transpile(madmom, source="numpy", to="jax")
-
-    # get some arrays
-    freqs = jnp.arange(20) * 10
-
-    # and use the transpiled version of any function from the library!
-    out = jax_madmom.audio.filters.hz2midi(freqs)
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any function</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write torch to jax function
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From TensorFlow</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write tf to jax function
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From NumPy</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write numpy to jax function
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-     </blockquote>
-   </details>
-
-   <details>
-   <summary><b>I'm using NumPy&ensp;<img class="dark-light" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_small_logo.png"></b></summary>
-      <blockquote>You can use Ivy to get NumPy code from:
-         <details>
-            <summary>Any library</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
-
-.. code-block:: python
-
-    import ivy
-    import kornia
-    import requests
-    import numpy as np
-    from PIL import Image
-
-    # transpile kornia from torch to np
-    np_kornia = ivy.transpile(kornia, source="torch", to="numpy")
-
-    # get an image
-    url = "http://images.cocodataset.org/train2017/000000000034.jpg"
-    raw_img = Image.open(requests.get(url, stream=True).raw)
-
-    # convert it to the format expected by kornia
-    img = np.transpose(np.array(raw_img), (2, 0, 1))
-    img = np.expand_dims(img, 0) / 255
-
-    # and use the transpiled version of any function from the library!
-    out = np_kornia.enhance.sharpness(img, 5)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From TensorFlow</summary>
-
-.. code-block:: python
-
-    import ivy
-    import numpy as np
-    import os
-    os.environ["SM_FRAMEWORK"] = "tf.keras"
-    import segmentation_models as sm
-
-    # transpile sm from tensorflow to numpy
-    np_sm = ivy.transpile(sm, source="tensorflow", to="numpy")
-
-    # get some image-like arrays
-    output = np.random.rand(1, 3, 512, 512).astype(dtype=np.float32)
-    target = np.random.rand(1, 3, 512, 512).astype(dtype=np.float32)
-
-    # and use the transpiled version of any function from the library!
-    out = np_sm.metrics.iou_score(output, target)
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From Jax</summary>
-
-.. code-block:: python
-
-    import ivy
-    import rax
-    import numpy as np
-
-    # transpile rax from jax to numpy
-    np_rax = ivy.transpile(rax, source="jax", to="numpy")
-
-    # get some arrays
-    scores = np.array([2.2, 1.3, 5.4])
-    labels = np.array([1.0, 0.0, 0.0])
-
-    # and use the transpiled version of any function from the library!
-    out = np_rax.poly1_softmax_loss(scores, labels)
-
-.. raw:: html
-
-               </details>
-            </blockquote>
-        </details>
-        
-        <details>
-            <summary>Any function</summary>
-            <blockquote>
-               <details>
-                  <summary>From PyTorch</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write torch to np function
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From TensorFlow</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write tf to np function
-
-.. raw:: html
-
-               </details>
-               <details>
-                  <summary>From JAX</summary>
-
-.. code-block:: python
-
-    import ivy
-
-    # ToDo: Write jax to np function
+    Only on github readme
 
 .. raw:: html
 
